@@ -1,17 +1,17 @@
-
+import DATA_OBJECTS.*;
 import java.util.ArrayList;
 
 
 
 public class Game {
 	private Player[] players;
-	private CardStack stack;
+	private CurrentPlayedCards stack;
 	private int playersRemaining;
 	private int currentPlayer;
 	public Game(){
 		currentPlayer = -1;
 		playersRemaining = 4;
-		stack = new CardStack();
+		stack = new CurrentPlayedCards();
 		ArrayList<Card> hand1 = new ArrayList<Card>();
 		ArrayList<Card> hand2 = new ArrayList<Card>();
 		ArrayList<Card> hand3 = new ArrayList<Card>();
@@ -32,8 +32,10 @@ public class Game {
 		players[3] = new Player("Player4", hand4);
 		
 		for(int i=0; i<4; i++){
-			if (players[i].isStarts())
+			if (players[i].isStarts()){
 				currentPlayer =i;
+				System.out.println("Starter: "+ currentPlayer);
+			}
 		}
 		//playGame();
 	}
@@ -55,11 +57,8 @@ public class Game {
 		return updatePlayer();
 	}
 
-	public ArrayList<Card> currentCardsAtPlay(){
-		return stack.getCurrentStack();
-	}
 	public ArrayList<Card> getCardStack(){
-		return stack.getCurrentStack();
+		return stack.getLastPlayedCards();
 	}
 	/**
 	 * updates current player to next possible player
@@ -76,10 +75,8 @@ public class Game {
 		int j = 0;
 		while(!playerUpdated && i<playersRemaining){
 			nextPlayer = (nextPlayer+1)%playersRemaining;
+			
 			if(!players[nextPlayer].hasPassed()){
-				if (nextPlayer == currentPlayer){
-
-				}
 				currentPlayer = nextPlayer;
 				playerUpdated = true;
 			}
@@ -92,11 +89,10 @@ public class Game {
 			for (j=0; j<playersRemaining; j++){
 				players[j].pass(false);
 			}
-			System.out.println("test");
 			currentPlayer = (currentPlayer + 1)%playersRemaining;
 			playerUpdated = true;
 		}
-		System.out.println("[DEBUG] i = " + i + " j= " + j +" playerUpdated = " + playerUpdated + " current = " + currentPlayer + "nextPlayer = " + nextPlayer);
+		System.out.println("[DEBUG] i = " + i + " j= " + j +" playerUpdated = " + playerUpdated + "nextPlayer = " + nextPlayer);
 		return playerUpdated;
 	}
 	/**
@@ -126,7 +122,6 @@ public class Game {
 	}
 	public boolean playHand(ArrayList<Card> playedCards){
 		boolean played;
-		
 		played=stack.addCards(playedCards, players[currentPlayer]);
 		if (played){
 			if(!players[currentPlayer].hasMoreCards()){
@@ -139,44 +134,3 @@ public class Game {
 
 }
 
-
-/**
-public void playGame() {
-	ArrayList<Card> cardBuff;
-	boolean validHand=false;
-	for(int i=0; i<4; i++){
-		if (players[i].isStarts())
-			currentPlayer =i;
-	}
-	if(currentPlayer == -1){
-		System.out.println("Error in deck, no one has 3 of spades");
-		return;
-	}
-	
-	//plays game
-	while(playersRemaining>0){
-		//if a player has passed, he cant play until new round is started
-		if(!players[currentPlayer].hasPassed()){
-			stack.printCurrentStack();
-			players[currentPlayer].printHand();
-			while(!validHand){
-				cardBuff = players[currentPlayer].playHand();
-				if (cardBuff != null){
-					validHand = stack.addCards(cardBuff, players[currentPlayer]);
-					if (!validHand)
-						System.out.println("Invalid hand, please reselect a valid hand");
-				}
-				
-				else
-					validHand=true;
-			}
-			if (!players[currentPlayer].isStillPlaying())
-				removePlayer(players[currentPlayer]);
-
-		}
-		validHand=false;
-		currentPlayer = (currentPlayer+1)%playersRemaining;
-	}
-	
-}
- */

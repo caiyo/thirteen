@@ -1,6 +1,8 @@
+import DATA_OBJECTS.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -8,8 +10,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 
-public class GameUI  {
-	JFrame frame;
+public class GameUI extends JFrame  {
+	//JFrame frame;
 	ArrayList<JCheckBox> checkboxes;
 	JPanel buttonPanel;
 	JPanel cardPanel = new JPanel();
@@ -22,10 +24,10 @@ public class GameUI  {
 	JLabel text3 ;
 	JPanel cardStack;
 	public GameUI(){
+		super();
 		buttonPanel = new JPanel();
 		playerPanel = new JPanel();
 		game = new Game();
-		frame = new JFrame();
 		checkboxes = new ArrayList<JCheckBox>();	
 		cardStack = new JPanel();
 		text = new JLabel();
@@ -48,7 +50,7 @@ public class GameUI  {
 					card.printCard();
 				}
 				if (game.playHand(playCards)){
-					update(frame.getContentPane());
+					update(getContentPane());
 					
 				}
 				//game.currentPlayer = (game.currentPlayer+1)%game.getRemainingPlayers();
@@ -64,18 +66,17 @@ public class GameUI  {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				if (game.pass())
-					update(frame.getContentPane());
+					update(getContentPane());
 			}
 			
 		});
 
 		buttonPanel.add(pass);
 		buttonPanel.add(playHand);
-		update(frame.getContentPane());
-		frame.setVisible(true);
-		
-		frame.setBounds(100, 100, 1500, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		 
+		update(getContentPane());
+		setVisible(true);
+		setBounds(100, 100, 1500, 300);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		 
 		 
 	}
 	public void update(Container pane){
@@ -85,6 +86,7 @@ public class GameUI  {
 		playerPanel.add(buttonPanel);
 		cardPanel = new JPanel();
 		checkboxes.clear();
+		System.out.println("Starter123: "+ game.currentPlayer());
 		for (Card card : game.getCurrentPlayer().getCards()){
 			checkboxes.add(new JCheckBox(card.getImage()));
 			checkboxes.get(checkboxes.size()-1).setBorderPainted(true);
@@ -106,9 +108,10 @@ public class GameUI  {
 		pane.add(text, BorderLayout.LINE_START);
 		pane.add(text2, BorderLayout.PAGE_END);
 		pane.add(text3, BorderLayout.LINE_END);
-		frame.repaint();
-		frame.validate();
+		repaint();
+		revalidate();
 	}
+	
 	public static void main(String args[]){
 		GameUI game = new GameUI();
 	}
